@@ -118,11 +118,105 @@
         --仪表盘添加+ribbon和feign相同
         --以ribbon为例：
         1.添加依赖——
-        2.主程序启动类中加入@EnableHystrixDashboard注解，开启hystrixDashboard
+        2.主程序启动类中：
+            ·加入@EnableHystrixDashboard注解，开启hystrixDashboard
+            ·在spring版本2.0以上需要注入一个servlet（启动类中）
         3.访问http://localhost:8764/hystrix
-          第一个文本框输入http://localhost:8764/hystrix.stream
+          ·第一个文本框输入http://localhost:8764/hystrix.stream
         4.点击monitor stream，进入下一个界面
+          ·显示加载中load....
         5.访问：http://localhost:8764/hi?name=forezp，查看监控界面
        
-**微服务监控聚合参考：**
-**https://blog.csdn.net/jrn1012/article/details/77837744**
+_**微服务监控聚合参考：**
+**https://blog.csdn.net/jrn1012/article/details/77837744**_
+
+**5.路由网关-zuul**
+
+    1.在Spring Cloud微服务系统中，一种常见的负载均衡方式是：
+        -1.客户端请求-->负载均衡（zuul、Ngnix）-->
+        -2.服务网关（zuul集群）-->具体的服务器  -->
+        -3.服务统一注册到高可用的服务注册中心集群
+        -4.服务的所有的配置文件由配置服务管理,
+           配置服务的配置文件放在git仓库，方便开发人员随时改配置
+    2.Zuul的主要功能是路由转发和过滤器。路由功能是微服务的一部分，
+      比如／api/user转发到到user服务，/api/shop转发到到shop服务。
+      zuul默认和Ribbon结合实现了负载均衡的功能
+    ——————————————————————
+    3.创建service-zuul工程:
+        1.pom依赖：spring-cloud-starter-netflix-zuul
+        2.applicaton类
+            ·加上注解@EnableZuulProxy，开启zuul的功能
+            ·加上注解@EnableEurekaClient，注册进eureka服务
+        3.yml配置文件
+        4.测试：
+            http://localhost:8769/api-a/hi?name=forezp
+            浏览器显示：hi forezp,i am from port:8762
+            http://localhost:8769/api-b/hi?name=forezp
+            浏览器显示：hi forezp,i am from port:8762
+    4.zuul不仅只是路由，并且还能过滤，做一些安全验证,详见filter
+    5.测试filter：
+        http://localhost:8769/api-a/hi?name=forezp
+        网页显示： token is empty
+        http://localhost:8769/api-a/hi?name=forezp&token=22
+        网页显示： hi forezp,i am from port:8762
+        
+**6.分布式配置中心(Spring Cloud Config)**
+
+    1.在分布式系统中，由于服务数量巨多，为了方便服务配置文件统一管理，实时更新，
+      所以需要分布式配置中心组件。在Spring Cloud中，
+      有分布式配置中心组件spring cloud config ， 
+      它支持配置服务放在配置服务的内存中（即本地），也支持放在远程Git仓库中。
+      在spring cloud config 组件中，分两个角色，
+      一是config server，二是config client。
+    ——————————————————————
+    2.创建config-server工程：
+        1.pom.xml添加依赖：spring-cloud-config-server
+        2.Application类加上@EnableConfigServer注解开启配置服务器的功能
+        3.配置文件修改指向git--文件为：config-client-dev.properties
+        4.测试：
+            -——————————————————————————
+            1.访问http://localhost:8888/config-client-dev.properties
+              展示其内容：foo: foo version 2
+            2.具体的映射关系测试请查看其配置文件
+            -——————————————————————————
+            http请求地址和资源文件映射如下:
+            /{application}/{profile}[/{label}]
+            /{application}-{profile}.yml
+            /{label}/{application}-{profile}.yml
+            /{application}-{profile}.properties
+            /{label}/{application}-{profile}.properties
+            #{application}映射客户端的"spring.application.name"
+            #{profile}映射客户端的"spring.profiles.active"（逗号分隔列表）
+    3.创建一个config-client工程：
+        1.pom.xml添加依赖：spring-cloud-starter-config
+        2.配置文件bootstrap.properties
+        3.程序的入口类，写一个API接口“／hi”，返回从配置中心读取的foo变量的值
+        4.测试：
+            打开网址访问：http://localhost:8881/hi，网页显示：
+            dev|å¼åèæ¨¡å¼éç½®
+            这就说明，config-client从config-server获取了foo的属性，而config-server是从git仓库读取的
+      
+**7.高可用的分布式配置中心(Spring Cloud Config)**
+
+    1.当config-client很多时，可以将config-server做成集群，达成高可用
+    2.创建一个config-eureka-server工程，用作服务注册中心：
+        1.eureka依赖
+        2.yml上，指定服务端口为8889，加上作为服务注册中心的基本配置
+        3.入口类： @EnableEurekaServer
+    3.改造config-server：
+        1.pom.xml文件加上EurekaClient的起步依赖
+        2.配置文件application.yml，指定服务注册地址为http://localhost:8889/eureka/
+        3.最后需要在程序的启动类Application加上@EnableEurekaClient的注解
+    4.改造config-client：
+        1.将其注册微到服务注册中心，作为Eureka客户端，需要pom文件加上起步依赖
+        2.配置文件bootstrap.properties，注意是bootstrap
+          加上服务注册地址为http://localhost:8889/eureka/
+          spring.cloud.config.discovery.enabled 是从配置中心读取文件。
+          spring.cloud.config.discovery.serviceId 配置中心的servieId，即服务名。
+    5.測試：
+        这时发现，在读取配置文件不再写ip地址，而是服务名，这时如果配置服务部署多份，通过负载均衡，从而高可用。
+        1.依次启动eureka-servr,config-server,config-client 
+        2.访问网址：http://localhost:8889/
+        3.访问http://localhost:8881/hi，浏览器显示：dev|å¼åèæ¨¡å¼éç½®
+        
+         
