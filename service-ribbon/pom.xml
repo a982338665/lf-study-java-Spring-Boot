@@ -84,6 +84,7 @@
 			<artifactId>spring-cloud-starter-hystrix-dashboard</artifactId>
 		</dependency>-->
 		<!--添加断路器-仪表盘依赖===================================-->
+
 	</dependencies>
 
 	<dependencyManagement>
