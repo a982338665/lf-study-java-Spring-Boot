@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: dubbo-consumer-demo
+
+server:
+  port: 8080
+dubbo:
+#  scan:
+#    base-packages: pers.li.impl       #作用：扫描dubbo相关注解-如@service
+  application:                        #dubbo中注册标识
+    id: dubbo-consumer
+    name: dubbo-consumer
+    qos-port: 22222
+    qos-enable: true
+  protocol:
+    id: dubbo
+    name: dubbo
+    port: 12346
+  registry:
+    id: my-id
+    address: zookeeper://192.168.150.135:2181

@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: dubbo-provider-000            #防止此名称重复(包含系统自带名称)
+server:
+  port: 9100
+dubbo:
+  scan:
+    base-packages: pers.li.impl       #作用：扫描dubbo相关注解-如@service
+  application:                        #dubbo中注册标识
+    id: dubbo-provider-000
+    name: dubbo-provider-000
+  protocol:
+    id: dubbo
+    name: dubbo
+    port: 78945
+    status: server
+  registry:
+    id: my-id
+    address: zookeeper://192.168.150.135:2181
+endpoints:
+  dubbo:
+    enabled: true
+
+management:
+  server:
+    port: 9110
+  health:
+    dubbo:
+      status:
+        extras: load,threadpool
+        defaults: memory
