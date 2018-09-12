@@ -18,8 +18,49 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>5.0.7.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>dubbo</artifactId>
+			<!--如果报错;使用此版本-->
+			<version>2.5.9</version>
+			<!--排除已经引用的spring-->
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.101tec</groupId>
+			<artifactId>zkclient</artifactId>
+			<version>0.10</version>
+		</dependency>
+		<!--logback 日志-->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>1.2.3</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.25</version>
+		</dependency>
+	</dependencies>
 	<modules>
-		<module>config-client</module>
+		<!--<module>config-client</module>
 		<module>config-eureka-server</module>
 		<module>config-server</module>
 		<module>eureka-client-01</module>
@@ -27,7 +68,10 @@
 		<module>eureka-server</module>
 		<module>service-feign</module>
 		<module>service-ribbon</module>
-		<module>service-zuul</module>
+		<module>service-zuul</module>-->
+		<module>zk-web</module>
+		<module>zk-services</module>
+		<module>zk-serviceImpl</module>
 	</modules>
 
 </project>

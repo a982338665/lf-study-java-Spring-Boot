@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans.xsd
+			http://www.springframework.org/schema/context
+			http://www.springframework.org/schema/context/spring-context-3.0.xsd
+            http://code.alibabatech.com/schema/dubbo
+            http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <context:component-scan base-package="pers.li"/>
+    <!-- consumer application name -->
+    <dubbo:application name="service_consumer"/>
+    <!-- registry address, used for consumer to discover services -->
+    <!--<dubbo:registry address="multicast://224.1.1.1:1234" />-->
+    <dubbo:registry address="192.168.150.135:2181" protocol="zookeeper"/>
+    <dubbo:consumer timeout="5000"/>
+    <!--<dubbo:protocol name="dubbo" port="20881"/>-->
+    <!-- which service to consume? -->
+    <dubbo:reference id="testService" interface="pers.li.TestService"/>
+
+</beans>

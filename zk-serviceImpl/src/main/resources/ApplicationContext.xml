@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans.xsd
+			http://www.springframework.org/schema/context
+			http://www.springframework.org/schema/context/spring-context-3.0.xsd
+
+
+
+            http://code.alibabatech.com/schema/dubbo
+            http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+    
+    <context:component-scan base-package="pers.li"/>
+    <!--配置注册中心：服务注册中心别名-->
+    <dubbo:application name="impl_provider"/>
+    <!-- 使用zookeeper注册中心暴露服务地址 -->
+    <!--<dubbo:registry address="zookeeper://192.168.3.15:2181"/>-->
+    <dubbo:registry address="192.168.150.135:2181" protocol="zookeeper"/>
+    <!-- 声明需要暴露的服务接口:6秒 -->
+    <!--<bean id="testService" class="pers.li.TestServiceImpl"/>-->
+    <dubbo:service interface="pers.li.TestService" ref="testService" timeout="6000"/>
+    <!--本地服务端口配置：消费者调用的实际端口，可随意写，但是不能重复-->
+    <dubbo:protocol name="dubbo" port="20880"/>
+
+
+
+
+
+
+
+<!--
+    &lt;!&ndash;配置注册中心：服务注册中心别名&ndash;&gt;
+    <dubbo:application name="impl_provider"/>
+    &lt;!&ndash; 使用multicast广播注册中心暴露服务地址&ndash;&gt;
+    &lt;!&ndash;<dubbo:registry address="multicast://224.1.1.1:1234" />&ndash;&gt;
+    &lt;!&ndash; 使用zookeeper注册中心暴露服务地址 &ndash;&gt;
+    &lt;!&ndash;<dubbo:registry address="zookeeper://192.168.3.15:2181"/>&ndash;&gt;
+    <dubbo:registry address="192.168.3.15:2181" protocol="zookeeper"/>
+    &lt;!&ndash; 用dubbo协议在20880端口暴露服务 &ndash;&gt;
+    <dubbo:protocol name="dubbo" port="20880"/>
+    &lt;!&ndash; 声明需要暴露的服务接口 &ndash;&gt;
+    <dubbo:service interface="com.yks.oms.OrderInterface"
+                   ref="orderService"/>
+-->
+</beans>
