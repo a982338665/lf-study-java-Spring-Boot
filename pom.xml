@@ -89,7 +89,7 @@
 
 	</dependencies>
 	<modules>
-		<!--<module>config-client</module>
+		<module>config-client</module>
 		<module>config-eureka-server</module>
 		<module>config-server</module>
 		<module>eureka-client-01</module>
@@ -97,15 +97,15 @@
 		<module>eureka-server</module>
 		<module>service-feign</module>
 		<module>service-ribbon</module>
-		<module>service-zuul</module>-->
+		<module>service-zuul</module>
 
 		<!--<module>zk-web</module>
 		<module>zk-services</module>
 		<module>zk-serviceImpl</module>-->
 
-		<module>zk-springboot-dubbo-service</module>
-		<module>zk-springboot-dubbo-web</module>
-		<module>zk-springboot-dubbo-serviceImpl</module>
+		<!--<module>zk-springboot-dubbo-service</module>-->
+		<!--<module>zk-springboot-dubbo-web</module>-->
+		<!--<module>zk-springboot-dubbo-serviceImpl</module>-->
 	</modules>
 
 </project>
